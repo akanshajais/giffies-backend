@@ -3,7 +3,6 @@ const env= require('dotenv');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
 const userRoutes = require('./routes/user'); 
 
 env.config();
@@ -30,7 +29,7 @@ const Connection = async(username,password) =>{
 
 Connection(username,password);
 
-app.use(bodyParser());
+app.use(express.json());
 app.use('/api', userRoutes);
 
 app.listen(process.env.PORT,() => {
