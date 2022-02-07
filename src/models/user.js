@@ -44,24 +44,18 @@ const userSchema = new mongoose.Schema({
     profilePicture:{type : String }
 },{ timestamps:true});
 
-userSchema.pre('save', function(next) {
-    if (this.isModified('password')) { //only if password is modified then hash
-      return bcrypt.hash(this.password, 8, (err, hash) => {
-        if (err) {
-          return next(err);
-        }
-        this.hash_password =password; //save hash in UserSchema.password in database
-        next();
-      });
-    }
-   
-  });
-
-
+userSchema.virtual('password')
+.set(function(password){
+    this.hash_password = bcrypt.hashSync(password, 10);
+});
+userSchema.virtual('fullName')
+.get(function(){
+    return `${this.firstName} ${this.lastName}`;
+});
 userSchema.methods = {
     authenticate: function(password){
         return  bcrypt.compareSync(password,this.hash_password);
     }
 }
-module.exports = mongoose.model("User", userSchema);
+module.exports =User =  mongoose.model("User", userSchema);
 
